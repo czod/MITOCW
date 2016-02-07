@@ -1,3 +1,4 @@
+#!/usr/bin/env /usr/bin/python -v
 # 6.00 Problem Set 11
 #
 # ps11.py
@@ -7,7 +8,16 @@
 #
 
 import string
+import os
+import sys
+if os.name == 'posix':
+	print "smells like unix, use cwd for path"
+	sys.path.append(".")
+else:
+	sys.path.append("D:\Google Drive\Education\MITOCW")
+
 from graph import Digraph, Edge, Node
+mapName = "mit_map.txt"
 
 #
 # Problem 2: Building up the Campus Map
@@ -216,3 +226,6 @@ def directedDFS(digraph, start, end, maxTotalDist, maxDistOutdoors):
 ##    print "Did brute force search raise an error?", bruteRaisedErr
 ##    print "Did DFS search raise an error?", dfsRaisedErr
 
+
+## My tests:
+load_map("mit_map.txt")
