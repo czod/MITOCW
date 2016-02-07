@@ -11,10 +11,11 @@ import string
 import os
 import sys
 if os.name == 'posix':
-	print "smells like unix, use cwd for path"
-	sys.path.append(".")
+        print "smells like unix, use cwd for path"
+        sys.path.append(".")
 else:
-	sys.path.append("D:\Google Drive\Education\MITOCW")
+        print "smells like...well, its Windows, EWW!!!"
+        sys.path.append("D:\Google Drive\Education\MITOCW")
 
 from graph import Digraph, Edge, Node
 mapName = "mit_map.txt"
