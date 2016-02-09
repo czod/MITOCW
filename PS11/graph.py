@@ -30,6 +30,23 @@ class Edge(object):
        return self.dest
 ##   def __str__(self):
 ##       return str(self.src) + '->' + str(self.dest)
+      
+class WeightedEdge(Edge):
+      """ The weightList is a list[] of weights associated with the edge, positive values increase the edge weight,
+   negative values decrease it."""
+   def __init__(self, src,dest,weightList):
+      Edge.__init__(self,src,dest)
+      self.weightList = weightList
+      self.arc = (src,dest)
+      assert type(self.src) == Node
+      assert type(self.dest) == Node
+      assert type(self.weightList) == list
+
+   def getWeights(self):
+      return self.weightList
+
+   def getArc(self):
+      return self.arc
 
 class Digraph(object):
    """
@@ -38,12 +55,14 @@ class Digraph(object):
    def __init__(self):
        self.nodes = set([])
        self.edges = {}
+       self.wEdges = {}
    def addNode(self, node):
-       if node in self.nodes:
-           raise ValueError('Duplicate node')
-       else:
-           self.nodes.add(node)
-           self.edges[node] = []
+      if self.hasNode(node):
+         raise ValueError('Duplicate Node')
+      else:
+         self.nodes.add(node)
+         self.edges[node] = []
+      
    def addEdge(self, edge):
        src = edge.getSource()
        dest = edge.getDestination()
@@ -55,6 +74,27 @@ class Digraph(object):
                 if dest.__eq__(self.edges[i][j]):
                    break
              self.edges[i].append(dest)
+
+   def addWEdge(self,edge):
+      src = edge.getSource()
+      dest = edge.getDestination()
+      weights = weightedEdge.getWeights()
+      wArc = weightedEdge.getArc()
+      for i in self.edges.iterkeys():
+         if src.__eq__(i):
+            for j in range(len(self.edges[i])):
+               if dest.__eq__(self.edges[i][j]):
+                  break
+            self.edges[i].append(dest)
+            self.weightedEdges[wArc] = weights
+
+   def getWeightedEdge(self,src,dest):
+      if not self.hasNode(src):
+         raise ValueError('Node not in graph')
+      if not self.hasNode(dest):
+         raise ValueError('Node not in graph')
+      wArc = (src,dest)
+      return self.weightedEdges[wArc]
 
    def childrenOf(self, node):
        return self.edges[node]
