@@ -15,7 +15,7 @@ if os.name == 'posix':
         sys.path.append(".")
 else:
         print "smells like...well, its Windows, EWW!!!"
-        sys.path.append("D:\Google Drive\Education\MITOCW")
+        sys.path.append("D:\Google Drive\Education\MITOCW\PS11")
 
 from graph import Digraph, Edge, Node
 mapName = "mit_map.txt"
@@ -47,6 +47,20 @@ def load_map(mapFilename):
     """
     #TODO
     print "Loading map from file..."
+    g = Digraph()
+    with open("mit_map.txt") as f:
+            for line in f:
+                    src,dest,dist,od=line.split()
+                    src_node = Node(src)
+                    dest_node = Node(dest)
+                    if not g.hasNode(src_node):g.addNode(src_node)
+                    if not g.hasNode(dest_node):g.addNode(dest_node)
+                    edge = Edge(src_node,dest_node)
+                    try:
+                            g.addEdge(edge)
+                    except ValueError:
+                            print "ValueError"
+
 
 #
 # Problem 3: Finding the Shortest Path using Brute Force Search
@@ -229,4 +243,7 @@ def directedDFS(digraph, start, end, maxTotalDist, maxDistOutdoors):
 
 
 ## My tests:
-load_map("mit_map.txt")
+weg=load_map(mapName)
+
+for i in range(len(weg.nodes)):
+    print weg.nodes.pop()

@@ -4,6 +4,7 @@
 #
 # A set of data structures to represent graphs
 #
+import copy
 
 class Node(object):
    def __init__(self, name):
@@ -27,8 +28,8 @@ class Edge(object):
        return self.src
    def getDestination(self):
        return self.dest
-   def __str__(self):
-       return str(self.src) + '->' + str(self.dest)
+##   def __str__(self):
+##       return str(self.src) + '->' + str(self.dest)
 
 class Digraph(object):
    """
@@ -46,13 +47,23 @@ class Digraph(object):
    def addEdge(self, edge):
        src = edge.getSource()
        dest = edge.getDestination()
-       if not(src in self.nodes and dest in self.nodes):
-           raise ValueError('Node not in graph')
-       self.edges[src].append(dest)
+##       if not(src in self.nodes and dest in self.nodes):
+##           raise ValueError('Node not in graph')
+       for i in self.edges.iterkeys():
+          if src.__eq__(i):
+             for j in range(len(self.edges[i])):
+                if dest.__eq__(self.edges[i][j]):
+                   break
+             self.edges[i].append(dest)
+
    def childrenOf(self, node):
        return self.edges[node]
    def hasNode(self, node):
-       return node in self.nodes
+      for i in self.nodes:
+         if i.__eq__(node):
+            print i,node,True
+            return True
+
    def __str__(self):
        res = ''
        for k in self.edges:
