@@ -55,9 +55,10 @@ def load_map(mapFilename):
                     dest_node = Node(dest)
                     if not g.hasNode(src_node):g.addNode(src_node)
                     if not g.hasNode(dest_node):g.addNode(dest_node)
-                    edge = Edge(src_node,dest_node)
+                    weights = [dist,od]
+                    wEdge = WeightedEdge(src,dest,weights)
                     try:
-                            g.addEdge(edge)
+                            g.addWEdge(wEdge)
                     except ValueError:
                             print "ValueError"
 
@@ -245,5 +246,4 @@ def directedDFS(digraph, start, end, maxTotalDist, maxDistOutdoors):
 ## My tests:
 weg=load_map(mapName)
 
-for i in range(len(weg.nodes)):
-    print weg.nodes.pop()
+

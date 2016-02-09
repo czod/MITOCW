@@ -34,13 +34,10 @@ class Edge(object):
 class WeightedEdge(Edge):
       """ The weightList is a list[] of weights associated with the edge, positive values increase the edge weight,
    negative values decrease it."""
-   def __init__(self, src,dest,weightList):
+   def __init__(self,src,dest,weightList):
       Edge.__init__(self,src,dest)
       self.weightList = weightList
       self.arc = (src,dest)
-      assert type(self.src) == Node
-      assert type(self.dest) == Node
-      assert type(self.weightList) == list
 
    def getWeights(self):
       return self.weightList
@@ -88,7 +85,7 @@ class Digraph(object):
             self.edges[i].append(dest)
             self.weightedEdges[wArc] = weights
 
-   def getWeightedEdge(self,src,dest):
+   def getWEdge(self,src,dest):
       if not self.hasNode(src):
          raise ValueError('Node not in graph')
       if not self.hasNode(dest):
