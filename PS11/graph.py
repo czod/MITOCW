@@ -30,18 +30,14 @@ class Edge(object):
        return self.dest
 ##   def __str__(self):
 ##       return str(self.src) + '->' + str(self.dest)
-      
+
 class WeightedEdge(Edge):
-      """ The weightList is a list[] of weights associated with the edge, positive values increase the edge weight,
-   negative values decrease it."""
    def __init__(self,src,dest,weightList):
       Edge.__init__(self,src,dest)
       self.weightList = weightList
       self.arc = (src,dest)
-
    def getWeights(self):
       return self.weightList
-
    def getArc(self):
       return self.arc
 
@@ -59,7 +55,7 @@ class Digraph(object):
       else:
          self.nodes.add(node)
          self.edges[node] = []
-      
+
    def addEdge(self, edge):
        src = edge.getSource()
        dest = edge.getDestination()
@@ -75,15 +71,9 @@ class Digraph(object):
    def addWEdge(self,edge):
       src = edge.getSource()
       dest = edge.getDestination()
-      weights = weightedEdge.getWeights()
-      wArc = weightedEdge.getArc()
-      for i in self.edges.iterkeys():
-         if src.__eq__(i):
-            for j in range(len(self.edges[i])):
-               if dest.__eq__(self.edges[i][j]):
-                  break
-            self.edges[i].append(dest)
-            self.weightedEdges[wArc] = weights
+      weights = edge.getWeights()
+      wArc = edge.getArc()
+      self.wEdges[wArc] = weights
 
    def getWEdge(self,src,dest):
       if not self.hasNode(src):
@@ -91,7 +81,7 @@ class Digraph(object):
       if not self.hasNode(dest):
          raise ValueError('Node not in graph')
       wArc = (src,dest)
-      return self.weightedEdges[wArc]
+      return self.wEdges[wArc]
 
    def childrenOf(self, node):
        return self.edges[node]

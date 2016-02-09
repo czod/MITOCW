@@ -17,7 +17,7 @@ else:
         print "smells like...well, its Windows, EWW!!!"
         sys.path.append("D:\Google Drive\Education\MITOCW\PS11")
 
-from graph import Digraph, Edge, Node
+from graph import *
 mapName = "mit_map.txt"
 
 #
@@ -56,11 +56,18 @@ def load_map(mapFilename):
                     if not g.hasNode(src_node):g.addNode(src_node)
                     if not g.hasNode(dest_node):g.addNode(dest_node)
                     weights = [dist,od]
-                    wEdge = WeightedEdge(src,dest,weights)
+                    edge = Edge(src_node,dest_node)
+                    wEdge = WeightedEdge(src_node,dest_node,weights)
+                    try:
+                            g.addEdge(edge)
+                    except ValueError:
+                            print "ValueError"
                     try:
                             g.addWEdge(wEdge)
                     except ValueError:
                             print "ValueError"
+    return g
+        
 
 
 #
@@ -244,6 +251,12 @@ def directedDFS(digraph, start, end, maxTotalDist, maxDistOutdoors):
 
 
 ## My tests:
+def print_attributes(obj):
+        for attr in obj.__dict__:
+                print attr, getattr(obj,attr)
+                
 weg=load_map(mapName)
 
 
+#print_attributes(weg)
+#print_attributes(weg.nodes)
