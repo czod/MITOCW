@@ -81,7 +81,7 @@ class Digraph(object):
       if not self.hasNode(dest):
          raise ValueError('Node not in graph')
       for i in self.wEdges.iterkeys():
-         print type(i), type(i[0]), type(i[1])
+         #print type(i), type(i[0]), type(i[1])
          tupa = i[0]
          tupb = i[1]
          if src == tupa and dest == tupb:
@@ -90,14 +90,14 @@ class Digraph(object):
 
    def childrenOf(self, node):
        for i in self.edges.iterkeys():
-          print type(i)
+          #print type(i)
           if node.__eq__(i):
              return self.edges[i]
       
    def hasNode(self, node):
       for i in self.nodes:
          if i.__eq__(node):
-            print i,node,True
+            #print i,node,True
             return True
 
    def __str__(self):

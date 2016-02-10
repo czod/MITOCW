@@ -47,26 +47,26 @@ def load_map(mapFilename):
     """
     #TODO
     print "Loading map from file..."
-    g = Digraph()
+    dG = Digraph()
     with open("mit_map.txt") as f:
             for line in f:
                     src,dest,dist,od=line.split()
                     src_node = Node(src)
                     dest_node = Node(dest)
-                    if not g.hasNode(src_node):g.addNode(src_node)
-                    if not g.hasNode(dest_node):g.addNode(dest_node)
+                    if not dG.hasNode(src_node):dG.addNode(src_node)
+                    if not dG.hasNode(dest_node):dG.addNode(dest_node)
                     weights = [dist,od]
                     edge = Edge(src_node,dest_node)
                     wEdge = WeightedEdge(src_node,dest_node,weights)
                     try:
-                            g.addEdge(edge)
+                            dG.addEdge(edge)
                     except ValueError:
                             print "ValueError"
                     try:
-                            g.addWEdge(wEdge)
+                            dG.addWEdge(wEdge)
                     except ValueError:
                             print "ValueError"
-    return g
+    return dG
         
 
 
@@ -76,8 +76,7 @@ def load_map(mapFilename):
 # State the optimization problem as a function to minimize
 # and the constraints
 #
-
-def bruteForceSearch(digraph, start, end, maxTotalDist, maxDistOutdoors):    
+def bruteForceSearch(digraph, start, end, maxTotalDist, maxDistOutdoors,visited=[]):    
     """
     Finds the shortest path from start to end using brute-force approach.
     The total distance travelled on the path must not exceed maxTotalDist, and
@@ -102,7 +101,44 @@ def bruteForceSearch(digraph, start, end, maxTotalDist, maxDistOutdoors):
         maxDistOutdoors constraints, then raises a ValueError.
     """
     #TODO
-    pass
+    #global numCalls
+    #numCalls += 1
+    # Parameter parsing and conversion
+    snode = Node(start)
+    enode = Node(end)
+    #  Parameter validation
+    if not (digraph.hasNode(snode) and digraph.hasNode(enode)):
+        raise ValueError('Start or end not in graph.')
+    #  Begin recursion
+    path = [snode]
+    if snode.__eq__(enode):
+        # Run done, lights out.
+        # There are two ways to arrive here:
+        #  1.  Both start and end nodes are the same on the first function call.
+        #  2.  The function has recursed itself down to the desired end node.
+        return path
+    shortest = None
+    for node in digraph.childrenOf(snode):
+        if(node not in visited):  #cycle evasion, this will probably have to
+                                # be for looped due to issues with comparison functions
+                                # in the node class def.
+            visited = visited + [node] #presumably, creates a new list via the
+                                        # the sum of the old list and the new node.
+            newPath = bruteForceSearch(digraph, node, end, 100,100,visited) #recursion initiated
+            if newPath == None:
+                #You can only get here if during one of the recursions, no
+                #path to the end node was found.  Move on to the next child.
+                continue
+            if (shortest == None or len(newPath) < len(shortest)):
+                shortest = newPath
+    if shortest != None:
+        path = path + shortest
+    else:
+        # we end up here on the last recursion when the last node is not the
+        # targetted end node.
+        path = None
+    return path
+    
 
 #
 # Problem 4: Finding the Shorest Path using Optimized Search Method
@@ -253,8 +289,13 @@ def directedDFS(digraph, start, end, maxTotalDist, maxDistOutdoors):
 ## My tests:
 
                 
-weg=load_map(mapName)
-weg.getEdgeWeight(Node(32),Node(36))
-
-#print_attributes(weg)
-#print_attributes(weg.nodes)
+##weg=load_map(mapName)
+##weg.getEdgeWeight(Node(32),Node(36))
+##
+###print_attributes(weg)
+###print_attributes(weg.nodes)
+digraph = load_map(mapName)
+nodelist = [32, 36, 76, 57, 68, 56, 66, 18, 16, 24, 13, 26, 34, 12, 8, 4, 39, 6, 37, 31, 2, 14, 50, 10, 3, 1, 5, 7, 9, 38, 35, 33, 46, 48, 54, 62, 64]
+for i in nodelist:
+    tpath = bruteForceSearch(digraph,str(i),'36',100,100)
+    print tpath
