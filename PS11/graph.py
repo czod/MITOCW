@@ -75,16 +75,25 @@ class Digraph(object):
       wArc = edge.getArc()
       self.wEdges[wArc] = weights
 
-   def getWEdge(self,src,dest):
+   def getEdgeWeight(self,src,dest):
       if not self.hasNode(src):
          raise ValueError('Node not in graph')
       if not self.hasNode(dest):
          raise ValueError('Node not in graph')
-      wArc = (src,dest)
-      return self.wEdges[wArc]
+      for i in self.wEdges.iterkeys():
+         print type(i), type(i[0]), type(i[1])
+         tupa = i[0]
+         tupb = i[1]
+         if src == tupa and dest == tupb:
+            tup = (tupa,tupb)
+            return self.wEdges[tup]
 
    def childrenOf(self, node):
-       return self.edges[node]
+       for i in self.edges.iterkeys():
+          print type(i)
+          if node.__eq__(i):
+             return self.edges[i]
+      
    def hasNode(self, node):
       for i in self.nodes:
          if i.__eq__(node):
@@ -98,3 +107,6 @@ class Digraph(object):
                res = res + str(k) + '->' + str(d) + '\n'
        return res[:-1]
 
+def print_attributes(obj):
+        for attr in obj.__dict__:
+                print attr, getattr(obj,attr)

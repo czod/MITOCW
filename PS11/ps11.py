@@ -251,12 +251,10 @@ def directedDFS(digraph, start, end, maxTotalDist, maxDistOutdoors):
 
 
 ## My tests:
-def print_attributes(obj):
-        for attr in obj.__dict__:
-                print attr, getattr(obj,attr)
+
                 
 weg=load_map(mapName)
-
+weg.getEdgeWeight(Node(32),Node(36))
 
 #print_attributes(weg)
 #print_attributes(weg.nodes)
