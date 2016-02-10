@@ -76,7 +76,9 @@ def load_map(mapFilename):
 # State the optimization problem as a function to minimize
 # and the constraints
 #
-def bruteForceSearch(digraph, start, end, maxTotalDist, maxDistOutdoors,visited=[]):    
+
+
+def bruteForceSearch(digraph, start, end, maxTotalDist, maxDistOutdoors,visited=[],dist=0,outDoors=0,totalDist=0,totalOutDoors=0,deBug=2):    
     """
     Finds the shortest path from start to end using brute-force approach.
     The total distance travelled on the path must not exceed maxTotalDist, and
@@ -100,12 +102,18 @@ def bruteForceSearch(digraph, start, end, maxTotalDist, maxDistOutdoors,visited=
         If there exists no path that satisfies maxTotalDist and
         maxDistOutdoors constraints, then raises a ValueError.
     """
+    if deBug==3:ptDebug("The paramaters passed to the function are ",[digraph, start, end, maxTotalDist, maxDistOutdoors,visited,dist,outDoors,totalDist,totalOutDoors])
     #TODO
     #global numCalls
     #numCalls += 1
     # Parameter parsing and conversion
     snode = Node(start)
     enode = Node(end)
+
+    if deBug>=2:ptDebug("Start and end nodes are ",[snode,enode])
+
+    
+    
     #  Parameter validation
     if not (digraph.hasNode(snode) and digraph.hasNode(enode)):
         raise ValueError('Start or end not in graph.')
@@ -116,23 +124,42 @@ def bruteForceSearch(digraph, start, end, maxTotalDist, maxDistOutdoors,visited=
         # There are two ways to arrive here:
         #  1.  Both start and end nodes are the same on the first function call.
         #  2.  The function has recursed itself down to the desired end node.
+        if deBug==3:ptDebug("Start and end nodes are equal ",[snode,enode])
         return path
     shortest = None
     for node in digraph.childrenOf(snode):
+        if deBug>=2:ptDebug("Iterating through the children of snode ",[snode,node])
         if(node not in visited):  #cycle evasion, this will probably have to
                                 # be for looped due to issues with comparison functions
                                 # in the node class def.
             visited = visited + [node] #presumably, creates a new list via the
                                         # the sum of the old list and the new node.
-            newPath = bruteForceSearch(digraph, node, end, 100,100,visited) #recursion initiated
-            if newPath == None:
+            if deBug>=2:ptDebug("Visited + node ",[visited,node])
+            edgeWeights = digraph.getEdgeWeight(snode,node)
+            dist = dist + int(edgeWeights[0])
+            outDoors = outDoors + int(edgeWeights[1])
+            if deBug>=2:ptDebug("Start and end nodes are ",[snode,enode])
+            newPath = bruteForceSearch(digraph,node,end,maxTotalDist,maxDistOutdoors,visited,dist,outDoors,totalDist,totalOutDoors) #recursion initiated
+            totalDist = totalDist + dist
+            totalOutDoors = totalOutDoors + outDoors
+            if deBug>=2:ptDebug("Total weights ",["totalDist:",totalDist,"totalOutDoors:",totalOutDoors])
+            if newPath == None or totalDist > maxTotalDist or totalOutDoors > maxDistOutdoors:
                 #You can only get here if during one of the recursions, no
                 #path to the end node was found.  Move on to the next child.
+                #If this branch is a dead end we also need to zero out the path weights associated with it.
+                totalDist = totalDist - dist
+                totalOutDoors = totalOutDoors - outDoors
+                dist = 0
+                outDoors = 0
+                if deBug>=2:ptDebug("Dead end resets ",["newPath:",newPath,"totalDist:",totalDist,"totalOutDoors:",totalOutDoors])
                 continue
             if (shortest == None or len(newPath) < len(shortest)):
                 shortest = newPath
+                if deBug>=2:ptDebug("found a new shortest path ",["newPath:",shortest])
+                
     if shortest != None:
         path = path + shortest
+        #if deBug>=1:ptDebug("final path ",["path:",path])
     else:
         # we end up here on the last recursion when the last node is not the
         # targetted end node.

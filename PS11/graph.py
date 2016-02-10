@@ -110,3 +110,10 @@ class Digraph(object):
 def print_attributes(obj):
         for attr in obj.__dict__:
                 print attr, getattr(obj,attr)
+def ptDebug(msg,dbvars=[]):
+   numIter = 0
+   print "******************************"
+   print msg
+   for i in range(len(dbvars)):
+      print dbvars[i]
+      numIter +=1
