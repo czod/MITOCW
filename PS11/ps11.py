@@ -1,3 +1,4 @@
+#!/usr/bin/env /usr/bin/python -v
 # 6.00 Problem Set 11
 #
 # ps11.py
@@ -7,10 +8,17 @@
 #
 
 import string
+import os
 import sys
-sys.path.append("D:\Google Drive\Education\MIT_OCW6.00SC\PS11")
-from graph import Digraph, Edge, Node, WeightedEdge, WeightedDigraph
+if os.name == 'posix':
+        print "smells like unix, use cwd for path"
+        sys.path.append(".")
+else:
+        print "smells like...well, its Windows, EWW!!!"
+        sys.path.append("D:\Google Drive\Education\MITOCW\PS11")
 
+from graph import *
+mapName = "mit_map.txt"
 
 #
 # Problem 2: Building up the Campus Map
@@ -18,7 +26,6 @@ from graph import Digraph, Edge, Node, WeightedEdge, WeightedDigraph
 # Write a couple of sentences describing how you will model the
 # problem as a graph)
 #
-#  Nodes in this case represent buildings.  Edges represent pathways between buildings.
 
 def load_map(mapFilename):
     """ 
@@ -38,55 +45,39 @@ def load_map(mapFilename):
     Returns:
         a directed graph representing the map
     """
-     #TODO
+    #TODO
     print "Loading map from file..."
-    wGraph = WeightedDigraph()
-    with open(mapFilename) as openfileobject:
-        for line in openfileobject:
-            print ""
-            print "parsing line ",line
-            pline = line.split()
-            print "line parsed "+str(pline)+" defining nodes and edgeWeights "
-            node0 = Node(pline[0])
-            node1 = Node(pline[1])
-            edgeWeights = [int(pline[2]),int(pline[3])]
-            print "adding nodes to graph"
-            try:
-                wGraph.addNode(node0)
-            except ValueError as e:
-                print "ValueError({0}): {1}".format(e.errno, e.strerror)
-            try:
-                wGraph.addNode(node1)
-            except ValueError as e:
-                print "ValueError({0}): {1}".format(e.errno, e.strerror)
-
-            print wGraph.nodes
-            print "instantiating Weighted Edge"
-            wEdge = WeightedEdge(node0,node1,edgeWeights)
-            print "weighted edge "+str(wEdge)+" instantiated"
-
-            wGraph.addWeightedEdge(wEdge)
-    return wGraph
+    g = Digraph()
+    with open("mit_map.txt") as f:
+            for line in f:
+                    src,dest,dist,od=line.split()
+                    src_node = Node(src)
+                    dest_node = Node(dest)
+                    if not g.hasNode(src_node):g.addNode(src_node)
+                    if not g.hasNode(dest_node):g.addNode(dest_node)
+                    weights = [dist,od]
+                    edge = Edge(src_node,dest_node)
+                    wEdge = WeightedEdge(src_node,dest_node,weights)
+                    try:
+                            g.addEdge(edge)
+                    except ValueError:
+                            print "ValueError"
+                    try:
+                            g.addWEdge(wEdge)
+                    except ValueError:
+                            print "ValueError"
+    return g
         
-        
+
 
 #
 # Problem 3: Finding the Shortest Path using Brute Force Search
 #
 # State the optimization problem as a function to minimize
 # and the constraints
-def getPathWeights(path):
-    startNode = path[0]
-    for i in path:
-        try:
-            node0 = path[i]
-            node1 = path[i+1]
-        except IndexError:
-            print "end of path"
-            break
-        
+#
 
-def bruteForceSearch(digraph, start, end, maxTotalDist, maxDistOutdoors,visited = []):    
+def bruteForceSearch(digraph, start, end, maxTotalDist, maxDistOutdoors):    
     """
     Finds the shortest path from start to end using brute-force approach.
     The total distance travelled on the path must not exceed maxTotalDist, and
@@ -111,26 +102,7 @@ def bruteForceSearch(digraph, start, end, maxTotalDist, maxDistOutdoors,visited 
         maxDistOutdoors constraints, then raises a ValueError.
     """
     #TODO
-    global numCalls
-    numCalls +=1
-    if not (digraph.hasNode(start) and digraph.hasNode(end)):
-        raise ValueError('Start or end not in graph.')
-    path = [str(start)]
-    if start == end:
-        return path
-    shortest = None
-    for node in digraph.childrenOf(start):
-        if (str(node) not in visited):
-            visited = visited + [str(node)]
-            newPath = bruteForceSearch(digraph,node,end,maxTotalDist,maxDistOutdoors,visited)
-            if newPath == None:
-                continue
-            if (shortest == None or \
-                len(newPath) < len(shortest) or \
-                totalDist > maxTotalDist or \
-                distOutdoors > maxDistOutdoors):
-                continue
-                
+    pass
 
 #
 # Problem 4: Finding the Shorest Path using Optimized Search Method
@@ -277,11 +249,12 @@ def directedDFS(digraph, start, end, maxTotalDist, maxDistOutdoors):
 ##    print "Did brute force search raise an error?", bruteRaisedErr
 ##    print "Did DFS search raise an error?", dfsRaisedErr
 
-##tfo = open("mit_map.txt","r")
-##tline = tfo.readline()
-##ptline = tline.split()
-##tnode0 = Node(int(ptline[0]))
-##tnode1 = Node(int(ptline[1]))
-##tedgeWeights = [int(ptline[2]),int(ptline[3])]
-##twEdge = WeightedEdge(tnode0,tnode1,tedgeWeights)
 
+## My tests:
+
+                
+weg=load_map(mapName)
+weg.getEdgeWeight(Node(32),Node(36))
+
+#print_attributes(weg)
+#print_attributes(weg.nodes)
