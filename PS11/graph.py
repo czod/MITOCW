@@ -84,7 +84,7 @@ class Digraph(object):
          #print type(i), type(i[0]), type(i[1])
          tupa = i[0]
          tupb = i[1]
-         if src == tupa and dest == tupb:
+         if (src == tupa and dest == tupb) or (dest==tupa and src == tupb):
             tup = (tupa,tupb)
             return self.wEdges[tup]
 
