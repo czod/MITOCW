@@ -1,1 +1,0 @@
-Everything here is either a direct copy of MIT OCW code or is derived therefrom so resolve your license issues with MIT.
